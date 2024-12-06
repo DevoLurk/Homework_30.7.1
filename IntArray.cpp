@@ -143,10 +143,11 @@ void IntArray::QsortThreadsPool(int *array, long left, long right)
     }
     while (left_bound <= right_bound);
 
-    std::shared_ptr<std::promise<void>> promise = std::make_shared<std::promise<void>>();
+    //std::shared_ptr<std::promise<void>> promise = std::make_shared<std::promise<void>>();
+
     if ((right_bound - left) > PART_SIZE)
     {
-        rh.pushRequest(&IntArray::quicksort_part, this, std::ref(array), left, right_bound, promise);
+        rh.pushRequest(&IntArray::quicksort_part, this, std::ref(array), left, right_bound);//, promise);
         QsortThreadsPool(array, left_bound, right);
     }
     else 
@@ -156,11 +157,11 @@ void IntArray::QsortThreadsPool(int *array, long left, long right)
     }
 }
 
-void IntArray::quicksort_part(int* array, long left, long right, std::shared_ptr<std::promise<void>> promise)
+void IntArray::quicksort_part(int* array, long left, long right)//, std::shared_ptr<std::promise<void>> promise)
 {
-    std::future<void> f = std::async(std::launch::async, [&]() { QsortThreads(arr, left, right); });
-    f.wait();
-    promise->set_value();
+    thread th([&]() { QsortThreads(arr, left, right); });
+    th.join();
+    //promise->set_value();
 }
 
 void IntArray::time_spend(void (IntArray::*func)(int*, long, long), int* arr, long left, long right)

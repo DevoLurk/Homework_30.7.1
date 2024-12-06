@@ -9,7 +9,7 @@
 #include<future>
 #include "RequestHandler.h"
 
-#define PART_SIZE 40000 // threads partision size
+#define PART_SIZE 150000 // threads partision size
 
 class IntArray
 {
@@ -22,7 +22,7 @@ private:
     void QsortThreads(int *array, long left, long right);
     void QsortThreadsPool(int *array, long left, long right);
     void time_spend(void (IntArray::*func)(int*, long, long), int*, long, long);
-    void quicksort_part(int* array, long left, long right, std::shared_ptr<std::promise<void>> promise);
+    void quicksort_part(int* array, long left, long right);//, std::shared_ptr<std::promise<void>> promise);
 
 public:
     IntArray(const int &size);
